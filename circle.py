@@ -1,4 +1,4 @@
-# circle.py, methods and classes involved in representing
+# circle.py, methods and classes involved in representing
 # the network's identifier circle.
 
 # Tulip's entire keyspace is arranged around the circle's
@@ -33,7 +33,7 @@ SHASIZE = 64
 # number of possible keys.
 
 BASE = 16
-KEYSIZE = 48
+KEYSIZE = 36
 
 KEYSPACE = BASE ** KEYSIZE
 
@@ -60,7 +60,7 @@ def shorten(string, index):
 # Convert an address to an integer. This is required when
 # calculating node distance.
 
-def atoi(address):
+def order(address):
     # Convert the hexadecimal address into a raw digest.
 
     bytes = unhexlify(address)
@@ -103,10 +103,10 @@ def normalise(digest):
 
 
 
-# Derive the address for a given artefact. IT will exist
+# Derive the address for a given artefact. It will exist
 # on the circle and within the keyspace.
 
-def derive(artefact):
+def address(artefact):
     try:
         digest = hash(artefact)
     
@@ -117,23 +117,9 @@ def derive(artefact):
         return
 
     if digest:
-        string = normalise(digest)
+        text = normalise(digest)
 
-        return string
-
-
-
-# Represents an address arround the circle. An address
-# inherits from the string class.
-
-class address(str):
-    def __new__(self, artefact):
-        # Allow the address to be directly accessed as a
-        # string.
-
-        return derive(artefact)
-
-    # Convert the address to raw bytes.
+        return text
 
 
 
@@ -144,6 +130,8 @@ class node:
     def __init__(self, artefact):
         self.bind(artefact)
 
+        
+        
     # Asociate the node with a particular piece of data.
 
     def bind(self, artefact):
@@ -152,19 +140,20 @@ class node:
         self.address = address(artefact)
         self.artefact = artefact
 
+        
+        
     # When a node is subject to int(), it will return the
     # integer value of its address.
 
     def __int__(self):
-        return atoi(self.address)
+        return order(self.address)
 
+    
+    
+    # Calculate the distance between two nodes by the
+    # numerical difference in their addresses.
 
+    def __sub__(self, node):
+        delta = int(self) - int(node)
 
-# Calculate the distance between two nodes using their
-# addresses.
-
-# Distance can be calculated in a number of ways. Here, it
-# is found as the numerical difference in addresses.
-
-def delta(a, b):
-    return int(a) - int(b)
+        return delta
