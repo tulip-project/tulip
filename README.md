@@ -1,2 +1,2 @@
 # tulip
-A Distributed Hash Table and overlay network.
+An anonymising Peer to Peer overlay network.
